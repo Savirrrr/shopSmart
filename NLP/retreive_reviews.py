@@ -41,6 +41,7 @@ import spacy
 import sys
 import sentimental_analysis
 import json
+import review_classification
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -54,6 +55,9 @@ def analyze_reviews(reviews):
         filtered_text = " ".join(filtered_words)  
 
         sentiment_label = sentimental_analysis.analyze_sentiment(filtered_text)  
+        transformer_sentiment = review_classification.classify_review(filtered_text)
+
+        final_sentiment = "Positive" if transformer_sentiment == "Positive" and sentiment_label == "Positive" else "Negative"
 
         if sentiment_label == "Positive":
             positive_count += 1
