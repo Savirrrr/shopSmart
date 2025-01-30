@@ -46,3 +46,5 @@ app.*.map.json
 
 /backend/node_modules
 /NLP/myenv
+/NLP/__pycache__
+/web_scraping/venv
