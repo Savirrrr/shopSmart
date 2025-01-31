@@ -48,12 +48,12 @@ class _NavbarState extends State<Navbar> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Search',
+          icon: Icon(Icons.computer),
+          label: 'Bot',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shop),
-          label: 'Shop',
+          icon: Icon(Icons.fire_hydrant),
+          label: 'Deals',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),

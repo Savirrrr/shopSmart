@@ -1,42 +1,3 @@
-# import spacy
-# import sys
-# import sentimental_analysis
-# import json
-
-# nlp=spacy.load("en_core_web_sm")
-
-# def remove_stop_words(reviews):
-#     results = []
-#     positive_count=0
-    
-#     for text in reviews:
-#         tokens = nlp(text)
-#         filtered_words = [token.text for token in tokens if not token.is_stop]
-#         filtered_text = " ".join(filtered_words)  
-
-#         sentiment_label = sentimental_analysis.analyze_sentiment(filtered_text) 
-        
-#         if sentiment_label == "Positive":
-#             positive_count += 1
-#         results.append(sentiment_label)
-
-#     total_reviews = len(reviews)
-#     positive_percentage = (positive_count / total_reviews) * 100 if total_reviews > 0 else 0
-
-#     overall_sentiment = f"{positive_count}/{total_reviews} reviews positive ({positive_percentage:.2f}%)"
-
-#     return overall_sentiment
-
-# if __name__=="__main__":
-#     try:
-#         text=sys.argv[1]
-#         review_score=remove_stop_words(text)
-
-#         print(json.dumps(review_score))
-#     except Exception as e:
-#         print(f"Python Error: {str(e)}", file=sys.stderr)
-#         sys.exit(1)
-
 import spacy
 import sys
 import sentimental_analysis
@@ -45,47 +6,70 @@ import review_classification
 
 nlp = spacy.load("en_core_web_sm")
 
-def analyze_reviews(reviews):
-    results = []
-    positive_count = 0
+def analyze_reviews(products_data):
+    for product in products_data:
+        reviews = product.get("reviews", [])  # Extract reviews
+        results = []
+        positive_count = 0
 
-    for text in reviews:
-        tokens = nlp(text)
-        filtered_words = [token.text for token in tokens if not token.is_stop]
-        filtered_text = " ".join(filtered_words)  
+        for text in reviews:
+            tokens = nlp(text)
+            filtered_words = [token.text for token in tokens if not token.is_stop]
+            filtered_text = " ".join(filtered_words)  
 
-        sentiment_label = sentimental_analysis.analyze_sentiment(filtered_text)  
-        transformer_sentiment = review_classification.classify_review(filtered_text)
+            sentiment_label = sentimental_analysis.analyze_sentiment(filtered_text)  
+            transformer_sentiment = review_classification.classify_review(filtered_text)
 
-        final_sentiment = "Positive" if transformer_sentiment == "Positive" and sentiment_label == "Positive" else "Negative"
+            final_sentiment = "Positive" if transformer_sentiment == "Positive" and sentiment_label == "Positive" else "Negative"
 
-        if sentiment_label == "Positive":
-            positive_count += 1
+            if sentiment_label == "Positive":
+                positive_count += 1
 
-        results.append({"review": text, "sentiment": sentiment_label})
+            results.append({"review": text, "sentiment": final_sentiment})
 
-    total_reviews = len(reviews)
-    positive_percentage = (positive_count / total_reviews) * 100 if total_reviews > 0 else 0
+        total_reviews = len(reviews)
+        positive_percentage = (positive_count / total_reviews) * 100 if total_reviews > 0 else 0
 
-    overall_sentiment = f"{positive_count}/{total_reviews} reviews positive ({positive_percentage:.2f}%)"
+        product["review_analysis"] = {
+            "positive_percentage": f"{positive_percentage:.2f}%",
+        }
 
-    # Debugging Logs
+    return products_data
 
-    # print("\n=== Processed Reviews ===",file=sys.stderr)
-    # for result in results:
-    #     print(f"Review: {result['review']}\nSentiment: {result['sentiment']}\n",file=sys.stderr)
-    # print(f"Overall Sentiment Summary: {overall_sentiment}",file=sys.stderr)
-    # print("========================\n",file=sys.stderr)
+def process_file(file_path):
+    try:
+        # Open the file and load the reviews
+        with open(file_path, 'r') as file:
+            data = json.load(file)
 
-    return int(positive_percentage)
+        reviews = data.get("reviews", [])
+        if not reviews:
+            print("No reviews found in the file.")
+            return file_path
+
+        # Process reviews and get the sentiment analysis results
+        overall_sentiment= analyze_reviews(reviews)
+
+        # Remove reviews from the data and add overall sentiment
+        data["reviews"] = []
+        data["rating"] = overall_sentiment
+
+        # Save the modified data back to the same file
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+
+        return file_path
+
+    except Exception as e:
+        print(f"Python Error: {str(e)}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     try:
-        reviews = json.loads(sys.argv[1])  
-        processed_reviews = analyze_reviews(reviews)
+        file_path = sys.argv[1]
 
-        # Return JSON result
-        print(json.dumps(processed_reviews))
+        updated_file_path = process_file(file_path)
+        print(f"File updated successfully: {updated_file_path}")
 
     except Exception as e:
         print(f"Python Error: {str(e)}", file=sys.stderr)

@@ -1,70 +1,72 @@
-const childProcess = require('child_process');
-const path = require('path');
+const childProcess = require("child_process");
+const path = require("path");
 
 const forLookFunction = async (req, res) => {
     const { message } = req.body;
-    console.log("Received search query:", message);
-    // const pythonScriptPath = path.join(__dirname, '..', '..', 'web_scraping', 'app.py');
+    console.log("Received search queries:", message);
 
-    // const pythonProcess = childProcess.spawn('python3', [pythonScriptPath, message]);
+    const pythonScriptPath = path.join(__dirname, "..", "..", "web_scraping", "scrape_product.py");
+    const pythonVenvPath = path.join(__dirname, "..", "..", "web_scraping", "venv", "bin", "python3");
+    
+    try {
+        const final = childProcess.spawn(pythonVenvPath, [pythonScriptPath, message], {
+            env: {
+                ...process.env,
+                PYTHONPATH: path.join(__dirname, "..", "..", "web_scraping", "venv", "lib", "python3.11", "site-packages"),
+                PYTHONUNBUFFERED: '1'
+            },
+            stdio: ['pipe', 'pipe', 'pipe']
+        });
 
-    // let output = "";
+        let stdout = '';
+        let stderr = '';
 
-    // pythonProcess.stdout.on('data', (data) => {
-    //     output += data.toString();
-    // });
+        final.stdout.on('data', (data) => {
+            stdout += data.toString();
+        });
 
-    // pythonProcess.stderr.on('data', (data) => {
-    //     console.error("Python Error:", data.toString());
-    // });
+        final.stderr.on('data', (data) => {
+            stderr += data.toString();
+            console.error('Python Error:', data.toString());
+        });
 
-    // pythonProcess.on('close', (code) => {
-    //     console.log(`output after running python code ${output}`);
-        
-    //     console.log(`Python process exited with code ${code}`);
-    //     res.status(200).json({ success: true, processed_message: output.trim() });
-    // });
-    // const pythonScriptPath=path.join(__dirname,'..','..','NLP','retreive_reviews.py');
-    // const pythonInterpreter = path.join(__dirname, '..', '..', 'NLP', 'myenv', 'bin', 'python3');
-    // const pythonProcess=childProcess.spawn(pythonInterpreter,[pythonScriptPath,message]);
+        final.on('error', (error) => {
+            console.error('Failed to start Python process:', error);
+            res.status(500).json({ success: false, error: 'Failed to start Python process' });
+        });
 
-    // let output=""
-    // pythonProcess.stdout.on('data',(data)=>{
-    //     output+=data.toString();
-    // });
+        final.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`Python process exited with code ${code}`);
+                console.error('STDERR:', stderr);
+                return res.status(500).json({ 
+                    success: false, 
+                    error: `Python process failed`,
+                    stderr: stderr
+                });
+            }
 
-    // pythonProcess.stderr.on('data', (data) => {
-    //     console.error("Python Error:", data.toString());
-    // });
-
-    // pythonProcess.on('close',(code)=>{
-    //     console.log(`output after running python code ${output}`);
-    //     console.log(`Python process exited with code ${code}`);
-    //     res.status(200).json({ success: true, processed_message: output.trim() });
-    // });
-    const { messages } = req.body;
-    console.log("Received search queries:", messages);
-
-    const pythonScriptPath = path.join(__dirname, '..', '..', 'NLP', 'retreive_reviews.py');
-    const pythonInterpreter = path.join(__dirname, '..', '..', 'NLP', 'myenv', 'bin', 'python3');
-
-    const pythonProcess = childProcess.spawn(pythonInterpreter, [pythonScriptPath, JSON.stringify(messages)]);
-
-    let output = "";
-
-    pythonProcess.stdout.on('data', (data) => {
-        output += data.toString();
-    });
-
-    pythonProcess.stderr.on('data', (data) => {
-        console.error("Python Error:", data.toString());
-    });
-
-    pythonProcess.on('close', (code) => {
-        console.log(`Output after running Python code: ${output}`);
-        console.log(`Python process exited with code ${code}`);
-        res.status(200).json({ success: true, percentage: JSON.parse(output.trim()) });
-    });
+            try {
+                // Trim and remove any leading/trailing whitespace
+                const cleanedOutput = stdout.trim().replace(/^\s*[\r\n]+/gm, '');
+                const parsedOutput = JSON.parse(cleanedOutput);
+                console.log(parsedOutput);
+                res.status(200).json({ success: true, message: parsedOutput });
+            } catch (error) {
+                console.error('Error parsing Python output:', error);
+                console.error('Raw output:', stdout);
+                res.status(500).json({ 
+                    success: false, 
+                    error: 'Failed to parse Python output',
+                    rawOutput: stdout
+                });
+            }
+            
+            
+        });
+    } catch (error) {
+        console.error('Unexpected error:', error);
+        res.status(500).json({ success: false, error: 'Unexpected server error' });
+    }
 };
-
-module.exports = { forLookFunction };
+module.exports={forLookFunction}
