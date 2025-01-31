@@ -52,8 +52,12 @@ class SearchProductWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
+                    
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(
+                        height: 10,
+                      ),
                       // Title
                       Expanded(
                         flex: 2,
@@ -111,6 +115,9 @@ class SearchProductWidget extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        )
                     ],
                   ),
                 ),
