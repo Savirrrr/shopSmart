@@ -1,76 +1,61 @@
 import json
-import os
-import requests
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
-from PIL import Image
-from io import BytesIO
 import random
 import time
+import requests
+from selenium import webdriver
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import scrape_flipkart
+import scrape_amazon
 
-# Set the product URL (For now, using dummy URL)
-PRODUCT_URL = "https://www.amazon.com/dp/B09G3HRMVB"
+firefox_options = Options()
+firefox_options.add_argument("--headless") 
+firefox_options.binary_location = "/opt/homebrew/bin/firefox"  
 
-# Setup Chrome options
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Run Chrome in headless mode (no UI)
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Initialize WebDriver using WebDriver Manager
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=chrome_options)
+service = Service("/opt/homebrew/bin/geckodriver")
+driver = webdriver.Firefox(service=service, options=firefox_options)
 
-def scrape_product(url):
-    driver.get(url)
-    time.sleep(3)  # Let the page load
 
-    soup = BeautifulSoup(driver.page_source, "html.parser")
+def generate_search_url(product_name, platform):
+    """Generate search URLs for Amazon and Flipkart."""
+    query = product_name.replace(" ", "+")
+    
+    if platform.lower() == "amazon":
+        return f"https://www.amazon.com/s?k={query}"
+    elif platform.lower() == "flipkart":
+        return f"https://www.flipkart.com/search?q={query}"
+    else:
+        return None
 
-    # Extract product title
-    title_element = soup.find("span", {"id": "productTitle"})
-    title = title_element.text.strip() if title_element else "Title Not Found"
+def scrape_product(product_name, platform):
+    search_url = generate_search_url(product_name, platform)
+    if not search_url:
+        return json.dumps({"error": "Unsupported platform"}, indent=4)
 
-    # Extract price
-    price_element = soup.find("span", {"class": "a-price-whole"})
-    price = price_element.text.strip() if price_element else "Price Not Found"
+    # if platform.lower() == "amazon":
+    file_path,product_data = scrape_amazon.scrape_amazon_products(search_url)
+    # elif platform.lower() == "flipkart":
+        # product_data = scrape_flipkart_product(search_url)
+    # else:
+        # return json.dumps({"error": "Unsupported platform"}, indent=4)
 
-    # Extract product image
-    image_element = soup.find("img", {"id": "landingImage"})
-    image_url = image_element["src"] if image_element else None
-
-    # Download and save the product image
-    image_filename = None
-    if image_url:
-        image_response = requests.get(image_url)
-        if image_response.status_code == 200:
-            image_filename = f"product_image.jpg"
-            image_path = os.path.join(os.getcwd(), image_filename)
-            with open(image_path, "wb") as img_file:
-                img_file.write(image_response.content)
-
-    # Extract reviews (random 10)
-    review_elements = soup.find_all("span", {"class": "a-size-base review-text review-text-content"})
-    reviews = [review.text.strip() for review in review_elements]
-    reviews = random.sample(reviews, min(10, len(reviews)))  # Get up to 10 reviews
-
-    # Close WebDriver
-    driver.quit()
-
-    # Prepare JSON response
-    product_data = {
-        "title": title,
-        "price": price,
-        "image": image_filename if image_filename else "No Image Found",
-        "reviews": reviews
-    }
-
-    return json.dumps(product_data, indent=4)
+    return [file_path,product_data]
 
 if __name__ == "__main__":
-    product_json = scrape_product(PRODUCT_URL)
-    print(product_json)
+    product_text = input("Enter product name: ")  # Example: "iPhone 13"
+    
+    print("Amazon Product Details:")
+    print(scrape_product(product_text, "amazon"))
+
+    # print("\nFlipkart Product Details:")
+    # print(scrape_product(product_text, "flipkart"))
+
+    # Close WebDriver after scraping
+    driver.quit()
