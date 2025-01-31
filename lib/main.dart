@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shopsmart/pages/home.dart';
 import 'package:shopsmart/pages/login.dart';
 import 'package:shopsmart/pages/profile.dart';
+import 'package:shopsmart/pages/search.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
       ),
       debugShowCheckedModeBanner: false ,
-      home:  LoginPage(),
+      home:  SearchPage(),
       routes: {
         '/login': (context) => LoginPage(),
         '/profile': (context) => ProfilePage(),

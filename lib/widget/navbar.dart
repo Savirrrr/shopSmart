@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopsmart/pages/bot.dart';
 import 'package:shopsmart/pages/home.dart';
 import 'package:shopsmart/pages/profile.dart';
 import 'package:shopsmart/pages/search.dart';
@@ -19,13 +20,13 @@ class _NavbarState extends State<Navbar> {
     });
     if(index==0)
     {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> SearchPage()));
     }
 
     if (index == 1) { // Search button clicked
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SearchPage()),
+        MaterialPageRoute(builder: (context) => ChatScreen()),
       );
     }
 
@@ -36,26 +37,31 @@ class _NavbarState extends State<Navbar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: Colors.lightBlue,
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white,
       showSelectedLabels: true,
       showUnselectedLabels: true,
       items: const [
         BottomNavigationBarItem(
+          backgroundColor: Colors.blue,
           icon: Icon(Icons.home),
           label: 'Home',
         ),
         BottomNavigationBarItem(
+          backgroundColor: Colors.blue,
           icon: Icon(Icons.computer),
           label: 'Bot',
         ),
         BottomNavigationBarItem(
+          backgroundColor: Colors.blue,
           icon: Icon(Icons.fire_hydrant),
           label: 'Deals',
         ),
         BottomNavigationBarItem(
+          backgroundColor: Colors.blue,
           icon: Icon(Icons.person),
           label: 'Profile',
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopsmart/models/search_model.dart';
 import 'package:shopsmart/service/search_service.dart';
+import 'package:shopsmart/widget/navbar.dart';
 import 'package:shopsmart/widget/search_widget.dart';
 
 class SearchPage extends StatefulWidget {
@@ -58,7 +59,8 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product Search'),
+        // title: const Text('Product Search'),
+        backgroundColor: Colors.blue,
       ),
       body: SafeArea(
         child: Column(
@@ -118,6 +120,7 @@ class _SearchPageState extends State<SearchPage> {
           ],
         ),
       ),
+      bottomNavigationBar: Navbar(),
     );
   }
 }
