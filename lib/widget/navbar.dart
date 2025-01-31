@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopsmart/pages/bot.dart';
-import 'package:shopsmart/pages/home.dart';
+import 'package:shopsmart/pages/hot_deals.dart';
 import 'package:shopsmart/pages/profile.dart';
 import 'package:shopsmart/pages/search.dart';
 
@@ -29,7 +29,9 @@ class _NavbarState extends State<Navbar> {
         MaterialPageRoute(builder: (context) => ChatScreen()),
       );
     }
-
+  if(index==2){
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HotDeals()));
+  }
   if(index==3){
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
   }
@@ -52,12 +54,12 @@ class _NavbarState extends State<Navbar> {
         ),
         BottomNavigationBarItem(
           backgroundColor: Colors.blue,
-          icon: Icon(Icons.computer),
+          icon: Icon(Icons.android),
           label: 'Bot',
         ),
         BottomNavigationBarItem(
           backgroundColor: Colors.blue,
-          icon: Icon(Icons.fire_hydrant),
+          icon: Icon(Icons.local_fire_department),
           label: 'Deals',
         ),
         BottomNavigationBarItem(

@@ -13,7 +13,7 @@ def generate_search_url(product_name, platform):
     query = urllib.parse.quote_plus(product_name)
 
     if platform.lower() == "amazon":
-        return f"https://www.amazon.com/s?k={query}"
+        return f"https://www.amazon.in/s?k={query}"
     elif platform.lower() == "flipkart":
         return f"https://www.flipkart.com/search?q={query}"
     else:

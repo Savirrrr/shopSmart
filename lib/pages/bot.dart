@@ -116,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Icon(Icons.android, color: Colors.white),
             ),
             SizedBox(width: 10),
-            Text('SHOP SMART CHATBOT'),
+            Text('SHOP SMART'),
           ],
         ),
         elevation: 1,

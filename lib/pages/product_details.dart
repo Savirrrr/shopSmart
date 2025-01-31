@@ -45,13 +45,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Product Image
+            // Product Image with reduced height
             Image.network(
               widget.product.imageUrl,
-              height: 300,
+              height: 200, // Reduced from 300
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.image_not_supported, size: 300);
+                return const Icon(Icons.image_not_supported, size: 250);
               },
             ),
             
@@ -73,7 +73,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   
                   // Price
                   Text(
-                    'Price: \$${widget.product.price}',
+                    'Price: \₹${widget.product.price}',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.green,
@@ -94,13 +94,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   const SizedBox(height: 16),
                   
                   // Reviews Button
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _showReviews = !_showReviews;
-                      });
-                    },
-                    child: Text(_showReviews ? 'Hide Reviews' : 'Show Reviews'),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _showReviews = !_showReviews;
+                        });
+                      },
+                      child: Text(_showReviews ? 'Hide Reviews' : 'Show Reviews'),
+                    ),
                   ),
                   
                   // Reviews Section
@@ -113,27 +115,54 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                         )),
                   
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24), // Increased spacing
                   
-                  // Open in WebView Button
-                  ElevatedButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.9,
-                          child: WebViewWidget(controller: _controller),
+                  // Action Buttons
+                  Center(
+                    child: Column(
+                      children: [
+                        // Open in WebView Button
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                          height: 48, // Increased height
+                          child: ElevatedButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) => SizedBox(
+                                  height: MediaQuery.of(context).size.height * 0.9,
+                                  child: WebViewWidget(controller: _controller),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            child: const Text('Open in WebView'),
+                          ),
                         ),
-                      );
-                    },
-                    child: const Text('Open in WebView'),
-                  ),
-                  
-                  // External Link Button
-                  ElevatedButton(
-                    onPressed: _launchUrl,
-                    child: const Text('Open External Link'),
+                        
+                        const SizedBox(height: 12), // Space between buttons
+                        
+                        // External Link Button
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                          height: 48, // Increased height
+                          child: ElevatedButton(
+                            onPressed: _launchUrl,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            child: const Text('Open External Link'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -144,88 +173,3 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 }
-
-// class SearchProductWidget extends StatelessWidget {
-//   final SearchProductModel product;
-
-//   const SearchProductWidget({Key? key, required this.product}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: () {
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => ProductDetailPage(product: product),
-//           ),
-//         );
-//       },
-//       child: Card(
-//         margin: const EdgeInsets.all(8),
-//         elevation: 4,
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             // Product Image
-//             Image.network(
-//               product.imageUrl,
-//               height: 200,
-//               width: double.infinity,
-//               fit: BoxFit.cover,
-//             ),
-            
-//             // Product Details
-//             Padding(
-//               padding: const EdgeInsets.all(8.0),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   // Title
-//                   Text(
-//                     product.title,
-//                     style: const TextStyle(
-//                       fontSize: 16,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                     maxLines: 2,
-//                     overflow: TextOverflow.ellipsis,
-//                   ),
-                  
-//                   // Price
-//                   Text(
-//                     '\$${product.price}',
-//                     style: const TextStyle(
-//                       fontSize: 18,
-//                       color: Colors.green,
-//                       fontWeight: FontWeight.w600,
-//                     ),
-//                   ),
-                  
-//                   // Review Analysis
-//                   Text(
-//                     'Positive Reviews: ${product.reviewAnalysis?.positivePercentage}',
-//                     style: const TextStyle(
-//                       color: Colors.blue,
-//                     ),
-//                   ),
-                  
-//                   // Reviews Preview
-//                   if (product.reviews.isNotEmpty)
-//                     Text(
-//                       'Sample Review: ${product.reviews.first}',
-//                       maxLines: 2,
-//                       overflow: TextOverflow.ellipsis,
-//                       style: const TextStyle(
-//                         fontStyle: FontStyle.italic,
-//                       ),
-//                     ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

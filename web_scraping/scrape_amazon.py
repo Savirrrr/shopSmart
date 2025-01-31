@@ -17,7 +17,7 @@ def scrape_amazon_products(url, driver, num_products=5):
                 
             for product_link in product_links:
                 href = product_link["href"]
-                product_url = href if href.startswith('https://') else f"https://www.amazon.com{href}"
+                product_url = href if href.startswith('https://') else f"https://www.amazon.in{href}"
                 
                 try:
                     driver.get(product_url)
