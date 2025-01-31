@@ -1,32 +1,17 @@
+import sys
 import json
-import random
-import time
-import requests
-from selenium import webdriver
-from bs4 import BeautifulSoup
+import traceback
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import scrape_flipkart
 import scrape_amazon
-
-firefox_options = Options()
-firefox_options.add_argument("--headless") 
-firefox_options.binary_location = "/opt/homebrew/bin/firefox"  
-
-
-service = Service("/opt/homebrew/bin/geckodriver")
-driver = webdriver.Firefox(service=service, options=firefox_options)
-
+import urllib.parse
+import retreive_reviews
 
 def generate_search_url(product_name, platform):
     """Generate search URLs for Amazon and Flipkart."""
-    query = product_name.replace(" ", "+")
-    
+    query = urllib.parse.quote_plus(product_name)
+
     if platform.lower() == "amazon":
         return f"https://www.amazon.com/s?k={query}"
     elif platform.lower() == "flipkart":
@@ -35,27 +20,49 @@ def generate_search_url(product_name, platform):
         return None
 
 def scrape_product(product_name, platform):
-    search_url = generate_search_url(product_name, platform)
-    if not search_url:
-        return json.dumps({"error": "Unsupported platform"}, indent=4)
+    try:
+        search_url = generate_search_url(product_name, platform)
+        if not search_url:
+            return {"error": "Unsupported platform"}
 
-    # if platform.lower() == "amazon":
-    file_path,product_data = scrape_amazon.scrape_amazon_products(search_url)
-    # elif platform.lower() == "flipkart":
-        # product_data = scrape_flipkart_product(search_url)
-    # else:
-        # return json.dumps({"error": "Unsupported platform"}, indent=4)
+        # Configure Firefox options to run headless
+        firefox_options = Options()
+        firefox_options.add_argument("--headless")
+        firefox_options.binary_location = "/opt/homebrew/bin/firefox"  
 
-    return [file_path,product_data]
+        service = Service("/opt/homebrew/bin/geckodriver")
+        
+        try:
+            # Use context manager to ensure driver is closed
+            with webdriver.Firefox(service=service, options=firefox_options) as driver:
+                # Modify scrape_amazon_products to accept driver
+                product_data = scrape_amazon.scrape_amazon_products(search_url, driver)
+                
+                if not product_data:
+                    return {"error": "No products found"}
+
+                analyzed_data = retreive_reviews.analyze_reviews(product_data)
+                return analyzed_data
+        except Exception as driver_error:
+            return {"error": f"Driver error: {str(driver_error)}"}
+    
+    except Exception as e:
+        # Capture full traceback for debugging
+        error_details = {
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
+        return error_details
 
 if __name__ == "__main__":
-    product_text = input("Enter product name: ")  # Example: "iPhone 13"
-    
-    print("Amazon Product Details:")
-    print(scrape_product(product_text, "amazon"))
-
-    # print("\nFlipkart Product Details:")
-    # print(scrape_product(product_text, "flipkart"))
-
-    # Close WebDriver after scraping
-    driver.quit()
+    try:
+        # Expect product name as first argument
+        product_text = sys.argv[1] if len(sys.argv) > 1 else input("Enter product name: ")
+        
+        result = scrape_product(product_text, "amazon")
+        # Use indent=None to ensure minimal whitespace
+        print(json.dumps(result, indent=None))
+    except Exception as e:
+        # Ensure error is output as valid JSON
+        print(json.dumps({"error": str(e), "traceback": traceback.format_exc()}))
+        sys.exit(1)
