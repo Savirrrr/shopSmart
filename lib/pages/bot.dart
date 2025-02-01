@@ -228,10 +228,14 @@ class _MessageBubble extends StatelessWidget {
           ),
           if (message.isUser) ...[
             const SizedBox(width: 8),
-            const CircleAvatar(
-              backgroundColor: Colors.blue,
-              child: Icon(Icons.person, color: Colors.white),
-            ),
+            ClipOval(
+      child: Image.asset(
+        'assets/images/profile.jpg', // Replace with your image path
+        fit: BoxFit.cover,
+        width: 40, // Ensure the image fits well inside the CircleAvatar
+        height: 40,
+      ),
+    ),
           ],
         ],
       ),
@@ -251,8 +255,66 @@ class Message {
   });
 }
 
-class TypingIndicator extends StatelessWidget {
+// class TypingIndicator extends StatefulWidget {
+//   const TypingIndicator({super.key});
+
+//   @override
+//   State<TypingIndicator> createState() => _TypingIndicatorState();
+// }
+
+// class _TypingIndicatorState extends State<TypingIndicator> with SingleTickerProviderStateMixin<TypingIndicator> {
+//   late AnimationController _controller;
+
+//   @override
+//   bool operator ==(Object other) {
+//     // TODO: implement ==
+//     return super == other;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       children: List.generate(3, (index) {
+//         return Padding(
+//           padding: const EdgeInsets.all(2.0),
+//           child: Container(
+//             width: 8,
+//             height: 8,
+//             decoration: const BoxDecoration(
+//               color: Colors.grey,
+//               shape: BoxShape.circle,
+//             ),
+//           ),
+//         );
+//       }),
+//     );
+//   }
+// }
+class TypingIndicator extends StatefulWidget {
   const TypingIndicator({super.key});
+
+  @override
+  State<TypingIndicator> createState() => _TypingIndicatorState();
+}
+
+class _TypingIndicatorState extends State<TypingIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -260,16 +322,36 @@ class TypingIndicator extends StatelessWidget {
       children: List.generate(3, (index) {
         return Padding(
           padding: const EdgeInsets.all(2.0),
-          child: Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: Colors.grey,
-              shape: BoxShape.circle,
-            ),
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              final double bounce = sin((_controller.value * pi * 2) +
+                      (index * pi * 0.5)) *
+                  4;
+              return Transform.translate(
+                offset: Offset(0, bounce),
+                child: const Dot(),
+              );
+            },
           ),
         );
       }),
+    );
+  }
+}
+
+class Dot extends StatelessWidget {
+  const Dot({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: const BoxDecoration(
+        color: Colors.grey,
+        shape: BoxShape.circle,
+      ),
     );
   }
 }

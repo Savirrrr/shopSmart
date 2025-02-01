@@ -1,7 +1,7 @@
 import time
 from bs4 import BeautifulSoup
 
-def scrape_amazon_products(url, driver, num_products=5):
+def scrape_amazon_products(url, driver, num_products=7):
     try:
         driver.get(url)
         time.sleep(3)  # Allow page to load

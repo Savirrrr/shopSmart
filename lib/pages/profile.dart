@@ -6,9 +6,9 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: const Text("Profile",style: TextStyle(color: Colors.white),),
         centerTitle: true,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -19,7 +19,7 @@ class ProfilePage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('assets/profile.jpg'),
+                backgroundImage: AssetImage('assets/images/profile.jpg'),
                 backgroundColor: Colors.grey.shade300,
               ),
             ),
@@ -27,7 +27,7 @@ class ProfilePage extends StatelessWidget {
 
             // Name
             const Text(
-              "John Doe",
+              "Team Antic",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
@@ -35,7 +35,7 @@ class ProfilePage extends StatelessWidget {
 
             // Email
             const Text(
-              "johndoe@example.com",
+              "teamantic@example.com",
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
 
@@ -59,9 +59,9 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   _buildProfileDetail(Icons.phone, "Phone", "+1 234 567 890"),
                   const Divider(),
-                  _buildProfileDetail(Icons.location_on, "Address", "New York, USA"),
+                  _buildProfileDetail(Icons.location_on, "Address", "Anurag University"),
                   const Divider(),
-                  _buildProfileDetail(Icons.calendar_today, "DOB", "Jan 1, 1990"),
+                  _buildProfileDetail(Icons.calendar_today, "DOB", "Feb 01, 2025"),
                 ],
               ),
             ),

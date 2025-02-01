@@ -39,7 +39,7 @@ class _NavbarState extends State<Navbar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.blue,
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       selectedItemColor: Colors.white,

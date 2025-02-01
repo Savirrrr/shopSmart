@@ -38,6 +38,7 @@ dependencies:
   webview_flutter:
   url_launcher:
   provider:
+  speech_to_text:
 
 dev_dependencies:
   flutter_test:
@@ -72,7 +73,7 @@ flutter:
     - assets/images/headphones.jpg
     - assets/images/mug.jpg
     - assets/images/speaker.jpg
-    - assets/images/tab.jpg
+    - assets/images/profile.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
