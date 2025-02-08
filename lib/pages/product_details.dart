@@ -45,10 +45,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Product Image with reduced height
             Image.network(
               widget.product.imageUrl,
-              height: 200, // Reduced from 300
+              height: 200, 
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.image_not_supported, size: 250);
@@ -60,7 +59,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
                   Text(
                     widget.product.title,
                     style: const TextStyle(
@@ -71,7 +69,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   
                   const SizedBox(height: 16),
                   
-                  // Price
                   Text(
                     'Price: \₹${widget.product.price}',
                     style: const TextStyle(
@@ -82,7 +79,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   
                   const SizedBox(height: 16),
                   
-                  // Positive Rating
                   Text(
                     'Positive Rating: ${widget.product.reviewAnalysis?.positivePercentage ?? 'N/A'}',
                     style: const TextStyle(
@@ -93,7 +89,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   
                   const SizedBox(height: 16),
                   
-                  // Reviews Button
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
@@ -105,7 +100,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     ),
                   ),
                   
-                  // Reviews Section
                   if (_showReviews)
                     ...widget.product.reviews.map((review) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -115,16 +109,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                         )),
                   
-                  const SizedBox(height: 24), // Increased spacing
+                  const SizedBox(height: 24),
                   
-                  // Action Buttons
                   Center(
                     child: Column(
                       children: [
-                        // Open in WebView Button
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                          height: 48, // Increased height
+                          width: MediaQuery.of(context).size.width * 0.8, 
+                          height: 48, 
                           child: ElevatedButton(
                             onPressed: () {
                               showModalBottomSheet(
@@ -145,12 +137,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                         ),
                         
-                        const SizedBox(height: 12), // Space between buttons
+                        const SizedBox(height: 12), 
                         
-                        // External Link Button
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                          height: 48, // Increased height
+                          width: MediaQuery.of(context).size.width * 0.8, 
+                          height: 48, 
                           child: ElevatedButton(
                             onPressed: _launchUrl,
                             style: ElevatedButton.styleFrom(

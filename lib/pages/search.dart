@@ -27,13 +27,11 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     _initializeSpeech();
     
-    // Add listener to update UI when text changes
     _searchController.addListener(() {
-      setState(() {});  // This will rebuild the UI when text changes
+      setState(() {});  
     });
   }
 
-  // Initialize speech recognition
   void _initializeSpeech() async {
     bool available = await _speech.initialize(
       onStatus: (status) {
@@ -54,7 +52,6 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  // Toggle voice listening
   void _toggleListening() async {
     if (!_isListening) {
       bool available = await _speech.initialize();
@@ -74,7 +71,6 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  // Clear search text
   void _clearSearch() {
     setState(() {
       _searchController.clear();
@@ -84,7 +80,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _searchProducts() async {
-    // Don't search if the text is empty
     if (_searchController.text.trim().isEmpty) {
       setState(() {
         _products.clear();
@@ -139,15 +134,14 @@ class _SearchPageState extends State<SearchPage> {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 controller: _searchController,
-                enabled: !_isListening, // Disable text input while listening
-                onSubmitted: (_) => _searchProducts(), // Search when Enter is pressed
+                enabled: !_isListening,
+                onSubmitted: (_) => _searchProducts(), 
                 decoration: InputDecoration(
                   hintText: 'Search products...',
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Show clear button only when there is text
                       if (_searchController.text.isNotEmpty)
                         IconButton(
                           icon: const Icon(Icons.clear),
@@ -210,7 +204,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void dispose() {
-    _searchController.dispose(); // Don't forget to dispose the controller
+    _searchController.dispose();
     _speech.cancel();
     super.dispose();
   }

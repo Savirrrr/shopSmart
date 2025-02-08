@@ -95,12 +95,9 @@ class _ChatScreenState extends State<ChatScreen> {
       _selectedIndex = index;
     });
 
-    // Handle navigation based on the index
     if (index == 1) {
-      // Navigate to Home Screen (Replace with your actual home screen navigation)
       Navigator.pop(context);
     } else if (index == 2) {
-      // Navigate to Profile Screen (Replace with actual navigation)
       print("Profile Clicked");
     }
   }
@@ -230,9 +227,9 @@ class _MessageBubble extends StatelessWidget {
             const SizedBox(width: 8),
             ClipOval(
       child: Image.asset(
-        'assets/images/profile.jpg', // Replace with your image path
+        'assets/images/profile.jpg', 
         fit: BoxFit.cover,
-        width: 40, // Ensure the image fits well inside the CircleAvatar
+        width: 40, 
         height: 40,
       ),
     ),
@@ -255,41 +252,6 @@ class Message {
   });
 }
 
-// class TypingIndicator extends StatefulWidget {
-//   const TypingIndicator({super.key});
-
-//   @override
-//   State<TypingIndicator> createState() => _TypingIndicatorState();
-// }
-
-// class _TypingIndicatorState extends State<TypingIndicator> with SingleTickerProviderStateMixin<TypingIndicator> {
-//   late AnimationController _controller;
-
-//   @override
-//   bool operator ==(Object other) {
-//     // TODO: implement ==
-//     return super == other;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       children: List.generate(3, (index) {
-//         return Padding(
-//           padding: const EdgeInsets.all(2.0),
-//           child: Container(
-//             width: 8,
-//             height: 8,
-//             decoration: const BoxDecoration(
-//               color: Colors.grey,
-//               shape: BoxShape.circle,
-//             ),
-//           ),
-//         );
-//       }),
-//     );
-//   }
-// }
 class TypingIndicator extends StatefulWidget {
   const TypingIndicator({super.key});
 

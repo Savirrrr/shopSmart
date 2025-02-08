@@ -13,7 +13,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() {
     if (_formKey.currentState?.validate() ?? false) {
-      // Navigate to HomePage and remove the LoginPage from the stack
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
@@ -34,7 +33,6 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Email Field
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -50,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20),
 
-              // Password Field
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
@@ -67,7 +64,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20),
 
-              // Login Button
               ElevatedButton(
                 onPressed: _login,
                 child: Text('Login'),
