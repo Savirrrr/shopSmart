@@ -7,7 +7,6 @@ class ProductProvider with ChangeNotifier {
   List<SearchProductModel> get products => List.unmodifiable(_products);
 
   void addProducts(List<SearchProductModel> newProducts) {
-    // Add only unique products
     for (var newProduct in newProducts) {
       if (!_products.any((p) => p.title == newProduct.title)) {
         _products.add(newProduct);
