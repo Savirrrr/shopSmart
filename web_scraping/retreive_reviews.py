@@ -12,6 +12,8 @@ def analyze_reviews(products_data):
         results = []
         positive_count = 0
 
+
+
         for text in reviews:
             tokens = nlp(text)
             filtered_words = [token.text for token in tokens if not token.is_stop]
